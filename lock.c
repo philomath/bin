@@ -15,6 +15,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#ifndef VERSION
+#define VERSION "1.0"
+#endif
+
 typedef struct
 {
     Window root, win;
@@ -37,21 +41,21 @@ main(int argc, char *argv[])
     Display *dpy;
 
     if ((argc == 2) && (strcmp("-v", argv[1]) == 0))
-        die("slock-mod, © 2006-2012 Anselm R Garbe, 2012 philomath\n");
+        die("lock "VERSION", © 2006-2012 Anselm R Garbe, 2012 philomath\n");
     else if (argc != 1)
-        die("usage: slock [-v]\n");
+        die("usage: lock [-v]\n");
 
     pws = getpw();
 
     if ((dpy = XOpenDisplay(NULL)) == NULL)
-        die("slock: cannot open display\n");
+        die("lock: cannot open display\n");
 
     /* Get the number of screens in display "dpy" and blank them all. */
     nscreens = ScreenCount(dpy);
     locks = malloc(sizeof(Lock *) * nscreens);
 
     if (locks == NULL)
-        die("slock: malloc failed\n");
+        die("lock: malloc failed\n");
 
     int nlocks = 0;
 
@@ -96,7 +100,7 @@ getpw(void)
     pw = getpwuid(getuid());
 
     if (pw == NULL)
-        die("slock: cannot retrieve password entry\n"
+        die("lock: cannot retrieve password entry\n"
             "(make sure to setcap CAP_DAC_READ_SEARCH+ep)\n");
 
     endpwent();
@@ -107,7 +111,7 @@ getpw(void)
         sp = getspnam(pw->pw_name);
 
         if (sp == NULL)
-            die("slock: cannot retrieve shadow entry\n"
+            die("lock: cannot retrieve shadow entry\n"
                 "(make sure to setcap CAP_DAC_READ_SEARCH+ep)\n");
 
         endspent();
